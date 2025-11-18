@@ -1,0 +1,18 @@
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = "your_jwt_secret"; // Usa una clave fuerte real en producción
+
+// Middleware para verificar token
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: "Unauthorized" });
+
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
+    req.user = user;
+    next();
+  });
+};
+
+export default verifyToken;
